@@ -28,6 +28,8 @@ BASIC MOUSE MOVEMENT
 [0,1,0,0,0] - go foward
 [1,0,0,0,1] - pause
 
+Q - hold q to exit
+
 
 
 
