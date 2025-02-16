@@ -1,9 +1,13 @@
 import cv2
 import os
 from cvzone.HandTrackingModule import HandDetector
+import pyautogui
 #variables
 width, height = 1280, 720
 gestureThreshold = 500 #how high the line
+last_index_finger_location = None
+last_time = 10
+clock = 0
 
 
 
@@ -21,10 +25,21 @@ detector = HandDetector(detectionCon=0.8, maxHands=1)
 
 
 
+# frame_count = 0  # Initialize frame count
+# frame_skip_rate = 2  # Process every 2nd frame (adjust this for balance)
+delta_x = 0
+delta_y = 0
+
 
 while True:
+    print(clock)
+    # frame_count += 1
+    # success, img = cap.read()
+    # if frame_count % frame_skip_rate != 0:
+    #     continue
 
-    #import images
+
+        #import images
 
 
     #get camera and hand
@@ -42,27 +57,53 @@ while True:
         fingers = detector.fingersUp(hand)
         cx,cy = hand['center']
         lmList = hand['lmList']
-        indexeFinger = lmList[8][0], lmList[8][1]
+        indexFinger = lmList[8][0], lmList[8][1]
         # Flip thumb detection manually for the correct hand
         if hand["type"] == "Right":
             fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
             # print(fingers)
+        if hand["type"] == "Left":
+            fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
+            # print(fingers)
+
+        # print(indexFinger)
 
 
 
         if cy < gestureThreshold : #if hand is above line
 
-            # Geasture 1 - Left
-            if fingers == [1, 0,0,0,0]:
-                print("left")
+            #Gesture 1: mouse pointer
+            if fingers == [0,1,1,0,0]:
+                if last_index_finger_location is not None:
+                    # Calculate the change in position
 
-            # Geasture 2 - right
-            if fingers == [0, 0,0,0,1]:
-                print("right")
+                    delta_x = indexFinger[0] - last_index_finger_location[0]
+                    delta_y = indexFinger[1] - last_index_finger_location[1]
+                    pyautogui.moveRel(delta_x, delta_y)
 
-            # Geasture 2 - right
-            if fingers == [0, 1,1, 0, 0]:
-                print("FUCK YOU TOO")
+
+                    # Move the mouse pointer
+                    # movement_threshold = 1  # Minimum change in pixels to move the mouse
+                    # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
+
+
+                    # Update the previous index finger position
+                last_index_finger_location = indexFinger
+            else:
+                # Reset the previous index finger position if the gesture is not active
+                last_index_finger_location = None
+
+
+
+
+
+
+
+            # Geasture
+            # if fingers == [1, 0,0,0,0]:
+            #     print("left")
+
+
 
 
 
