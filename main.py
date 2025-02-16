@@ -1,13 +1,14 @@
 import threading
 import time
 import tkinter as tk
+import hand_recon
 #from tkinter import ttk
 running = False
 background_thread = None
 
 def background_program():
     while running:
-        print("Hello")
+
 
 # Create the root window
 root = tk.Tk()
