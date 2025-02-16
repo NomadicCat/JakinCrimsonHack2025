@@ -2,7 +2,7 @@ import cv2
 import os
 import time
 
-from shared import get_sensitivity
+#from shared import get_sensitivity
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
@@ -138,7 +138,7 @@ def detect_gesture(gesture_active, method, input_delay, insert, gesture_id):
             gesture_timers[gesture_id] = None
 
 parking = True
-fingers = [0, 0, 0, 0, 0]
+#fingers = [0, 0, 0, 0, 0]
 
 
 while True:
@@ -160,7 +160,7 @@ while True:
     cv2.imshow('Image', img)
 
 
-    cy = gestureThreshold + 1
+    #cy = gestureThreshold + 1
 
 
 
@@ -197,8 +197,8 @@ while True:
         )
 
 
-    while True:
-        sensitivity = get_sensitivity()
+    #while True:
+        #sensitivity = get_sensitivity()
 
         if interactiveInterface.parker:  # if hand is above line cy < gestureThreshold
 
