@@ -1,4 +1,6 @@
-import pyautogui, win32gui, win32con, time, pygetwindow, pyperclip
+import pyautogui, time, pygetwindow as gw, pyperclip
+
+external_array = [0,0,0,0,0]
 
 def get_active_window():
     # Get Active Window Title
@@ -18,3 +20,6 @@ def get_active_window():
 
 print(get_active_window()) # Window URL for future reference
 
+# Check Array and Activate Hotkey
+def ca3():
+    
