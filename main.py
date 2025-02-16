@@ -65,7 +65,7 @@ def on_button_click():
 
         running = False
         if background_thread is not None:
-            background_thread = None
+            background_thread = False
 
 
 # Add a button to the window
