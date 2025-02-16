@@ -54,4 +54,3 @@ def move_mouse(dx, dy):
 
 def enable_mouse_control():
     globals.mouse_control_active = True
-    print("Mouse control enabled")

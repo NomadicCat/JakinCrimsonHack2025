@@ -113,17 +113,12 @@ while True:
                     # Move the mouse pointer
 
 
-                    detect_gesture(distance < distance1, method=interactiveInterface.enable_mouse_control, input_delay=0.5)
+                    detect_gesture(distance < distance1, method=interactiveInterface.enable_mouse_control, input_delay=0.0)
 
                     if globals.mouse_control_active:
 
-                        print("Mouse control is active, moving mouse!")  # Debug print
                         interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
 
-                    else :
-
-                        detect_release(distance > distance1, method=interactiveInterface.click, input_delay=0.5)
-                        print("Distance: ", distance, "Distance 1: ", distance1)
 
 
 
