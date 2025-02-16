@@ -20,7 +20,7 @@ global_start_timer = None
 sensitivity = 1
 reset = 1
 
-
+global mouse_control_active
 
 
 
@@ -186,34 +186,35 @@ while True:
             "drive_gesture"  # Unique ID for click
         )
 
+        index_finger_tip = lmList[8][0:2]  # (x, y) of index fingertip
+        thumb_tip = lmList[4][0:2]  # (x, y) of thumb tip
 
+        distance, info, img = detector.findDistance(index_finger_tip, thumb_tip, img, color=(0, 255, 0), scale=10)
 
-        if interactiveInterface.parker:  # if hand is above line cy < gestureThreshold
+        index_finger_mcp = lmList[5][0:2]  # (x, y) of index fingertip
+        index_finger_pip = lmList[6][0:2]  # (x, y) of thumb tip
 
-            # Gesture 1: mouse pointer
-            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
-                if last_index_finger_location is not None:
-                    # Calculate the change in position
+        distance1, info2, img = detector.findDistance(index_finger_mcp, index_finger_pip, img, color=(0, 255, 0),
+                                                      scale=10)
 
-                    delta_x = indexFinger[0] - last_index_finger_location[0]
-                    delta_y = indexFinger[1] - last_index_finger_location[1]
-                    # Move the mouse pointer
-                    if fingers == [1, 1, 1, 0, 0]:
-                        sensitivity = 0.5
-                    if fingers == [0, 0, 0, 0, 0]:
-                        sensitivity = 3
+        if fingers == [0, 0, 1, 1, 1] or fingers == [1, 1, 1, 1, 1] or fingers == [0, 1, 1, 1, 1] or fingers == [1,
+                                                                                                                 0,
+                                                                                                                 1,
+                                                                                                                 1,
+                                                                                                                 1]:
+            if last_index_finger_location is not None:
+                # Calculate the change in position
+                delta_x = indexFinger[0] - last_index_finger_location[0]
+                delta_y = indexFinger[1] - last_index_finger_location[1]
+                # Move the mouse pointer
 
-                interactiveInterface.move_mouse(delta_x * sensitivity, delta_y * sensitivity)
+                detect_gesture(distance < distance1, method=interactiveInterface.enable_mouse_control,
+                               input_delay=0.4)
 
-                # movement_threshold = 1  # Minimum change in pixels to move the mouse
-                    # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
-                    # Update the previous index finger position
-                last_index_finger_location = indexFinger
-            else:
-                # Reset the previous index finger position if the gesture is not active
-                last_index_finger_location = None
+                if mouse_control_active:
+                    interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
 
-        #gesture 2: press k
+            #gesture 2: press k
             # Gesture 2: Press K (hold gesture for input_delay seconds)
             # if fingers == [1, 1, 0, 0, 1]:
             #     gesture_start_time = None

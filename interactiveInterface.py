@@ -4,7 +4,6 @@ import cv2
 import os
 import time
 import keyboard
-
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
@@ -14,6 +13,9 @@ from pyautogui import leftClick
 from subprocess import call
 
 parker = True
+
+global mouse_control_active
+
 
 # def get_active_window():
 #     # Get Active Window Title
@@ -223,3 +225,6 @@ def drive():
 
     global parker
     parker = True
+
+def enable_mouse_control():
+    mouse_control_active = True
