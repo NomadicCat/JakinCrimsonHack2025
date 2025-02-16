@@ -1,9 +1,14 @@
 import cv2
 import os
 from cvzone.HandTrackingModule import HandDetector
+import interactiveInterface
+
+
+
 #variables
 width, height = 1280, 720
 gestureThreshold = 500 #how high the line
+playpause = [0,0,0,0,0]
 
 
 
@@ -42,7 +47,7 @@ while True:
         fingers = detector.fingersUp(hand)
         cx,cy = hand['center']
         lmList = hand['lmList']
-        indexeFinger = lmList[8][0], lmList[8][1]
+        indexFinger = lmList[8][0], lmList[8][1]
         # Flip thumb detection manually for the correct hand
         if hand["type"] == "Right":
             fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
@@ -50,17 +55,19 @@ while True:
 
 
 
+
         if cy < gestureThreshold : #if hand is above line
 
-            # Geasture 1 - Left
+            # Gesture 1 - Left
             if fingers == [1, 0,0,0,0]:
-                print("left")
+                interactiveInterface.printHand()
 
-            # Geasture 2 - right
+
+            # Gesture 2 - right
             if fingers == [0, 0,0,0,1]:
                 print("right")
 
-            # Geasture 2 - right
+            # Gesture 2 - right
             if fingers == [0, 1,1, 0, 0]:
                 print("FUCK YOU TOO")
 

@@ -1,6 +1,5 @@
 import pyautogui, time, pygetwindow as gw, pyperclip
 
-external_array = [0,0,0,0,0]
 
 def get_active_window():
     # Get Active Window Title
@@ -21,5 +20,21 @@ def get_active_window():
 print(get_active_window()) # Window URL for future reference
 
 # Check Array and Activate Hotkey
-def ca3():
-    
+def printHand():
+    print("hello world")
+
+def pressSpace():
+    pyautogui.press('space', presses=1)
+
+def pressk():
+    pyautogui.press('k', presses=1)
+
+def pressj():
+    pyautogui.press('j', presses=1)
+
+def pressl():
+    pyautogui.press('l', presses=1)
+
+def move_mouse(dx, dy): # Move the mouse by Δx and Δy
+   pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
+   time.sleep(0.3)
