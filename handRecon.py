@@ -2,6 +2,9 @@ import cv2
 import os
 from cvzone.HandTrackingModule import HandDetector
 import pyautogui
+
+
+pyautogui.PAUSE = 0
 #variables
 width, height = 1280, 720
 gestureThreshold = 500 #how high the line
@@ -79,14 +82,8 @@ while True:
 
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
-                    pyautogui.moveRel(delta_x, delta_y)
-
-
                     # Move the mouse pointer
-                    # movement_threshold = 1  # Minimum change in pixels to move the mouse
-                    # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
-
-
+                    pyautogui.moveRel(delta_x, delta_y)
                     # Update the previous index finger position
                 last_index_finger_location = indexFinger
             else:
