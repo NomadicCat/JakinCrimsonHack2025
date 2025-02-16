@@ -55,10 +55,7 @@ def detect_gesture(gesture_active, method, input_delay):
         if globals.g_start_timer is None:
             globals.g_start_timer = time.time()  # Start timer when gesture is first detected
         elif time.time() - globals.g_start_timer >= input_delay:
-            globals.holding = time.time()
-            print("Gesture recognized after holding!")
             if method == "mouse_control_active":
-                print("Mouse control active!")
                 globals.mouse_control_active = True  # Activate mouse movement
             else:
                 method()  # Trigger the method
@@ -69,24 +66,6 @@ def detect_gesture(gesture_active, method, input_delay):
             globals.g_start_timer = None  # Reset timer if gesture is not active
 
 
-def detect_release(gesture_release, method, input_delay):
-
-    if globals.g_start_timer is None:
-        globals.g_start_timer = time.time()
-        globals.novelty = False
-    elif time.time() - globals.g_start_timer <= input_delay:
-        print("Under ", input_delay, " seconds")
-        globals.novelty = True
-        if gesture_release:
-            print(time.time(), " :: ", globals.holding)
-            if time.time() - globals.holding < input_delay / 2:
-                print("Gesture released before holding!")
-                method()
-                globals.g_start_timer = None
-                globals.novelty = False
-    else:
-        globals.g_start_timer = None
-        globals.novelty = False
 
 while True:
     success, img = cap.read()
