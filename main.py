@@ -8,7 +8,7 @@ import cv2
 running = False
 background_thread = None
 
-sensitivity = 2
+sensitivity = 2.5
 
 def update_sensitivity(value):
     global sensitivity
@@ -46,13 +46,16 @@ root = tk.Tk()
 
 # Set the window size and title
 root.geometry("700x400")
+#root.resizable(False, False)
 root.title("Interface")
 
 # Add a label with the text "no hands"
 main_screen = tk.Label(root, text="blue hands", font=("Helvetica", 80, "bold"))
 main_screen.place(relx=.5, y=100, anchor=tk.CENTER)
-subtext = tk.Label(root, text="developed by Team Jakin", font=("Helvetica", 20))
+subtext = tk.Label(root, text="developed by Team Jakin", font=("Helvetica", 20, "bold"))
 subtext.place(relx=.5, y=165, anchor=tk.CENTER)
+subtext2 = tk.Label(root, text="for Crimson Code 2025", font=("Helvetica", 15))
+subtext2.place(relx=.5, y=195, anchor=tk.CENTER)
 
 
 
@@ -61,7 +64,8 @@ def on_button_click():
     global running, background_thread
     # Check the current button text and toggle it
     if button.cget("text") == "enable":
-        button.config(text="Q to exit")  # Change text to "Q to exit"
+        button.config(text="Q to exit",
+        font=("Helvetica", 35))# Change text to "Q to exit"
 
         if not running:
             running = True
@@ -82,14 +86,15 @@ def on_button_click():
 
 # Add a button to the window
 button = tk.Button(root, text="enable", font=("Helvetica", 40), command=on_button_click)
-button.place(x=200, y=190, width=200, height=100)
+button.place(x=200, y=215, width=200, height=100)
 
 settings_window = tk.Frame(root)
+settings_window.pack_propagate(False)
 
 def open_settings():
     settingsButton.place_forget()
     settings_window.pack(fill="both", expand=True)
-    trackbar.pack(fill=tk.X, pady=10)
+    trackbar.pack(pady=100, anchor="center")
     main_screen.place_forget()
     returnButton.pack(side=tk.BOTTOM, pady=20)
 
@@ -99,15 +104,18 @@ def return_to_main():
     main_screen.place(relx=.5, y=100, anchor=tk.CENTER)
     settings_window.pack_forget()
     returnButton.pack_forget()
-    settingsButton.place(x=400, y=190, height=100, width=100)
+    settingsButton.place(x=400, y=215, height=100, width=100)
 
 
-trackbar = tk.Scale(settings_window, from_=0, to=3, orient=tk.HORIZONTAL, label="adjust value",resolution=0.1, command=update_sensitivity)
+trackbar = tk.Scale(settings_window, from_=0.5, to=5, orient=tk.HORIZONTAL,
+                    label="                                         adjust your sensitivity, bud",
+                    resolution=0.1,
+                    command=update_sensitivity, length=400)
 trackbar.set(sensitivity)  # Set default value
 
 
 settingsButton=tk.Button(root, text="⚙", font=("Helvetica", 40), command=open_settings)
-settingsButton.place(x=400, y=190, height=100, width=100)
+settingsButton.place(x=400, y=215, height=100, width=100)
 
 returnButton = tk.Button(settings_window, text="return", font=("Helvetica", 20), command=return_to_main)
 

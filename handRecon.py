@@ -6,6 +6,7 @@ import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
 import interactiveInterface
+from main.py import sensitivity
 
 global sensitivity
 
