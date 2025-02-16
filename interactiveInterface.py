@@ -15,7 +15,7 @@ from subprocess import call
 parker = True
 
 global mouse_control_active
-
+global g_start_timer
 
 # def get_active_window():
 #     # Get Active Window Title
@@ -79,9 +79,10 @@ def printHand():
 def click():
     pyautogui.click()
 
-def move_mouse(dx, dy): # Move the mouse by Δx and Δy
-   # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
-   pyautogui.moveRel(dx, dy)
+def move_mouse(dx, dy):
+    """Move the mouse based on dx, dy only if mouse_control_active is True."""
+    if mouse_control_active:
+        pyautogui.moveRel(dx, dy)  # Move the mouse by relative delta valuesdef move_mouse(dx, dy):
 
 def skip_right():
 
@@ -228,3 +229,18 @@ def drive():
 
 def enable_mouse_control():
     mouse_control_active = True
+
+
+def detect_gesture2(gesture_active, method, input_delay):
+    """Detect a gesture with a hold duration based on the input_delay."""
+    if gesture_active:
+        if g_start_timer is None:
+            g_start_timer = time.time()  # Start timer when gesture is first detected
+        elif time.time() - g_start_timer >= input_delay:
+            if method == "mouse_control_active":
+                mouse_control_active = True  # Activate mouse movement
+            else:
+                method()  # Trigger the method
+            g_start_timer = None  # Reset timer after triggering
+    else:
+        mouse_control_active = False  # Disable mouse movement when the gesture stops

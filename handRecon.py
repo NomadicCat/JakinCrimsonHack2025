@@ -20,9 +20,6 @@ global_start_timer = None
 sensitivity = 1
 reset = 1
 
-global mouse_control_active
-
-
 
 # camera setup
 cap = cv2.VideoCapture(0)
@@ -70,6 +67,7 @@ gesture_timers = {}  # Track timers for each gesture
 current_gesture = None
 previous_gesture = None
 gesture_activated = {}
+
 
 def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id):
     global gesture_timers
@@ -208,11 +206,13 @@ while True:
                 delta_y = indexFinger[1] - last_index_finger_location[1]
                 # Move the mouse pointer
 
-                detect_gesture(distance < distance1, method=interactiveInterface.enable_mouse_control,
+                interactiveInterface.detect_gesture2(distance < distance1, method=interactiveInterface.enable_mouse_control,
                                input_delay=0.4)
 
-                if mouse_control_active:
+                if interactiveInterface.mouse_control_active:
                     interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
+
+
 
             #gesture 2: press k
             # Gesture 2: Press K (hold gesture for input_delay seconds)
