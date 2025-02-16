@@ -2,12 +2,19 @@ import cv2
 import os
 import time
 
+from shared import get_sensitivity
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
 from fontTools.merge.util import current_time
 
 import interactiveInterface
+import main
+
+
+
+class HandReconExit(Exception):  # Custom exception
+    pass
 
 
 pyautogui.PAUSE = 0
@@ -131,6 +138,8 @@ def detect_gesture(gesture_active, method, input_delay, insert, gesture_id):
             gesture_timers[gesture_id] = None
 
 parking = True
+fingers = [0, 0, 0, 0, 0]
+
 
 while True:
 
@@ -151,6 +160,7 @@ while True:
     cv2.imshow('Image', img)
 
 
+    cy = gestureThreshold + 1
 
 
 
@@ -187,6 +197,8 @@ while True:
         )
 
 
+    while True:
+        sensitivity = get_sensitivity()
 
         if interactiveInterface.parker:  # if hand is above line cy < gestureThreshold
 
@@ -202,6 +214,8 @@ while True:
                         sensitivity = 0.5
                     if fingers == [0, 0, 0, 0, 0]:
                         sensitivity = 3
+
+                    interactiveInterface.move_mouse(delta_x * sensitivity ,delta_y * sensitivity)
 
                 interactiveInterface.move_mouse(delta_x * sensitivity, delta_y * sensitivity)
 
