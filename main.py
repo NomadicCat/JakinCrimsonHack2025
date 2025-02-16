@@ -1,25 +1,49 @@
 import threading
 import time
 import tkinter as tk
-import hand_recon
+
 #from tkinter import ttk
 running = False
 background_thread = None
 
 def background_program():
+    global running
+    import handRecon
     while running:
+        handRecon.handRecon()
+        time.sleep(0.1)
+
+def start_background_program():
+    global running, background_thread
+    if not running:
+        running = True
+        background_thread = threading.Thread(target=background_program)
+        background_thread.daemon = True  # Ensure thread exits with the main program
+        background_thread.start()
+
+
+def stop_background_program():
+    global running
+    if running:
+        running = False
+        # Wait for the thread to finish
+        if background_thread is not None:
+            background_thread.join()
+
 
 
 # Create the root window
 root = tk.Tk()
 
 # Set the window size and title
-root.geometry("700x500")
+root.geometry("700x400")
 root.title("Interface")
 
 # Add a label with the text "no hands"
-main_screen = tk.Label(root, text="no hands", font=("Helvetica", 80, "bold"))
+main_screen = tk.Label(root, text="blue hands", font=("Helvetica", 80, "bold"))
 main_screen.place(relx=.5, y=100, anchor=tk.CENTER)
+subtext = tk.Label(root, text="developed by Team Jakin", font=("Helvetica", 20))
+subtext.place(relx=.5, y=165, anchor=tk.CENTER)
 
 
 
