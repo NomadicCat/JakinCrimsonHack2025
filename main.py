@@ -69,7 +69,9 @@ def on_button_click():
         if background_thread is not None:
             background_thread = False
             running = False
+            cap.release()
             cv2.destroyAllWindows()
+            sys.exit()
 
 
 
