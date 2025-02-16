@@ -7,6 +7,8 @@ import pytweening
 from cvzone.HandTrackingModule import HandDetector
 import interactiveInterface
 
+global sensitivity
+
 class HandReconExit(Exception):  # Custom exception
     pass
 

@@ -8,6 +8,12 @@ import cv2
 running = False
 background_thread = None
 
+sensitivity = 2
+
+def update_sensitivity(value):
+    global sensitivity
+    sensitivity = float(value)
+
 def background_program():
     global running
     import handRecon
@@ -22,6 +28,7 @@ def start_background_program():
         background_thread = threading.Thread(target=background_program)
         background_thread.daemon = True  # Ensure thread exits with the main program
         background_thread.start()
+
 
 
 def stop_background_program():
@@ -54,7 +61,7 @@ def on_button_click():
     global running, background_thread
     # Check the current button text and toggle it
     if button.cget("text") == "enable":
-        button.config(text="disable")  # Change text to "Disable"
+        button.config(text="Q to exit")  # Change text to "Q to exit"
 
         if not running:
             running = True
@@ -69,8 +76,6 @@ def on_button_click():
         if background_thread is not None:
             background_thread = False
             running = False
-            cap.release()
-            cv2.destroyAllWindows()
             sys.exit()
 
 
@@ -84,8 +89,10 @@ settings_window = tk.Frame(root)
 def open_settings():
     settingsButton.place_forget()
     settings_window.pack(fill="both", expand=True)
+    trackbar.pack(fill=tk.X, pady=10)
     main_screen.place_forget()
     returnButton.pack(side=tk.BOTTOM, pady=20)
+
 
 
 def return_to_main():
@@ -93,6 +100,10 @@ def return_to_main():
     settings_window.pack_forget()
     returnButton.pack_forget()
     settingsButton.place(x=400, y=190, height=100, width=100)
+
+
+trackbar = tk.Scale(settings_window, from_=0, to=3, orient=tk.HORIZONTAL, label="adjust value",resolution=0.1, command=update_sensitivity)
+trackbar.set(sensitivity)  # Set default value
 
 
 settingsButton=tk.Button(root, text="⚙", font=("Helvetica", 40), command=open_settings)
