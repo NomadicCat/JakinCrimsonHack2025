@@ -44,7 +44,6 @@ delta_y = 0
 
 
 COOLDOWN_TIME = 1.0
-input_delay = 1.0
 last_execution_time = 0
 check_input = 0
 
@@ -62,12 +61,10 @@ def detect_gesture(gesture_active, method, input_delay):
     if gesture_active:
         if g_start_timer is None:
             g_start_timer = time.time()  # Start timer when gesture is first detected
-        else:
-            elapsed_time = time.time() - g_start_timer
-            if elapsed_time >= input_delay:
-                print("Gesture recognized after holding!")
-                method()  # Trigger the method
-                g_start_timer = None  # Reset timer after triggering
+        elif time.time() - g_start_timer >= input_delay:
+            print("Gesture recognized after holding!")
+            method()  # Trigger the method
+            g_start_timer = None  # Reset timer after triggering
     else:
         g_start_timer = None  # Reset timer if gesture is not active
 
@@ -109,12 +106,21 @@ while True:
 
         # print(indexFinger)
 
+        index_finger_tip = lmList[8][0:2]  # (x, y) of index fingertip
+        thumb_tip = lmList[4][0:2]  # (x, y) of thumb tip
+
+        distance, info, img = detector.findDistance(index_finger_tip, thumb_tip, img, color=(0, 255, 0), scale=10)
+
+        index_finger_mcp = lmList[5][0:2]  # (x, y) of index fingertip
+        index_finger_pip = lmList[6][0:2]  # (x, y) of thumb tip
+
+        distance1, info2, img = detector.findDistance(index_finger_mcp, index_finger_pip, img, color=(0, 255, 0), scale=10)
 
 
         if True: #if hand is above line cy < gestureThreshold
 
             #Gesture 1: mouse pointer
-            if fingers == [1,1,1,0,0] or fingers == [0,0,0,0,0]:
+            if fingers == [0,0,1,1,1] or fingers == [1,1,1,1,1]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
 
@@ -169,15 +175,6 @@ while True:
 
 
 
-        index_finger_tip = lmList[8][0:2]  # (x, y) of index fingertip
-        thumb_tip = lmList[4][0:2]  # (x, y) of thumb tip
-
-        distance, info, img = detector.findDistance(index_finger_tip, thumb_tip, img, color=(0, 255, 0), scale=10)
-
-        index_finger_mcp = lmList[5][0:2]  # (x, y) of index fingertip
-        index_finger_pip = lmList[6][0:2]  # (x, y) of thumb tip
-
-        distance1, info2, img = detector.findDistance(index_finger_mcp, index_finger_pip, img, color=(0, 255, 0), scale=10)
 
 
         if distance1 < distance:
