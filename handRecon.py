@@ -11,7 +11,7 @@ import interactiveInterface
 pyautogui.PAUSE = 0
 #variables
 width, height = 1280, 720
-gestureThreshold = 500 #how high the line
+gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
 
 
@@ -36,6 +36,9 @@ detector = HandDetector(detectionCon=0.8, maxHands=1)
 delta_x = 0
 delta_y = 0
 
+
+COOLDOWN_TIME = 1.0
+last_execution_time = 0
 
 while True:
 
@@ -63,7 +66,7 @@ while True:
         fingers = detector.fingersUp(hand)
         cx,cy = hand['center']
         lmList = hand['lmList']
-        indexFinger = lmList[8][0], lmList[8][1]
+        indexFinger = lmList[0][0], lmList[0][1]
         # Flip thumb detection manually for the correct hand
         if hand["type"] == "Right":
             fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
@@ -79,14 +82,15 @@ while True:
         if cy < gestureThreshold : #if hand is above line
 
             #Gesture 1: mouse pointer
-            if fingers == [0,1,1,0,0]:
+            if fingers == [1,1,1,0,0]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
 
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
-                    interactiveInterface.move_mouse(delta_x,delta_y)
+                    sensitivity = 1.5
+                    interactiveInterface.move_mouse(delta_x * sensitivity ,delta_y * sensitivity)
 
                     # movement_threshold = 1  # Minimum change in pixels to move the mouse
                     # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
@@ -95,10 +99,23 @@ while True:
             else:
                 # Reset the previous index finger position if the gesture is not active
                 last_index_finger_location = None
+        #gesture 2: press k
+        if fingers == [1,1,0,0,1]:
+            current_time = 0
+            current_time = time.time()
+            if current_time - last_execution_time > COOLDOWN_TIME :
+                print("Gesture recognized! Running interactiveInterface.pressk()...")
+                interactiveInterface.pressk()  # Trigger your function
+                last_execution_time = current_time  # Update the
 
-
-
-
+        #gesture 3: click
+        if fingers == [1,1,0,0,0]:
+            current_time = 0
+            current_time = time.time()
+            if current_time - last_execution_time > COOLDOWN_TIME :
+                print("Gesture recognized! Running interactiveInterface.click()...")
+                interactiveInterface.click()  # Trigger your function
+                last_execution_time = current_time  # Update the
 
 
 
@@ -106,8 +123,6 @@ while True:
             # if fingers == [1, 0,0,0,0]:
             #     print("left")
 
-
-    cv2.waitKey(1)
     key = cv2.waitKey(1)  # Capture keypress
     if key == ord('q'):
         break
