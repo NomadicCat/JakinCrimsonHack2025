@@ -46,6 +46,8 @@ delta_y = 0
 
 COOLDOWN_TIME = 1.0
 last_execution_time = 0
+fingers = [0, 0, 0, 0, 0]
+
 
 while True:
 
@@ -65,7 +67,7 @@ while True:
     hands, img = detector.findHands(img, flipType=False)
     cv2.imshow('Image', img)
 
-
+    cy = gestureThreshold + 1
 
     if hands:
 
@@ -87,6 +89,7 @@ while True:
 
     while True:
         sensitivity = get_sensitivity()
+
         if cy < gestureThreshold : #if hand is above line
 
             #Gesture 1: mouse pointer
