@@ -1,6 +1,7 @@
 import cv2
 import os
 from cvzone.HandTrackingModule import HandDetector
+<<<<<<< HEAD
 import pyautogui
 
 
@@ -11,6 +12,16 @@ gestureThreshold = 500 #how high the line
 last_index_finger_location = None
 last_time = 10
 clock = 0
+=======
+import interactiveInterface
+
+
+
+#variables
+width, height = 1280, 720
+gestureThreshold = 500 #how high the line
+playpause = [0,0,0,0,0]
+>>>>>>> computer_macro
 
 
 
@@ -73,8 +84,10 @@ while True:
 
 
 
+
         if cy < gestureThreshold : #if hand is above line
 
+<<<<<<< HEAD
             #Gesture 1: mouse pointer
             if fingers == [0,1,1,0,0]:
                 if last_index_finger_location is not None:
@@ -101,6 +114,20 @@ while True:
             #     print("left")
 
 
+=======
+            # Gesture 1 - Left
+            if fingers == [1, 0,0,0,0]:
+                interactiveInterface.printHand()
+
+
+            # Gesture 2 - right
+            if fingers == [0, 0,0,0,1]:
+                print("right")
+
+            # Gesture 2 - right
+            if fingers == [0, 1,1, 0, 0]:
+                print("FUCK YOU TOO")
+>>>>>>> computer_macro
 
 
 
