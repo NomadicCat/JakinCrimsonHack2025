@@ -2,13 +2,14 @@ import cv2
 import os
 import time
 
+from shared import get_sensitivity
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
 import interactiveInterface
-from main.py import sensitivity
+import main
 
-global sensitivity
+
 
 class HandReconExit(Exception):  # Custom exception
     pass
@@ -84,7 +85,8 @@ while True:
         # print(indexFinger)
 
 
-
+    while True:
+        sensitivity = get_sensitivity()
         if cy < gestureThreshold : #if hand is above line
 
             #Gesture 1: mouse pointer
@@ -95,7 +97,7 @@ while True:
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
-                    sensitivity = 1.5
+
                     interactiveInterface.move_mouse(delta_x * sensitivity ,delta_y * sensitivity)
 
                     # movement_threshold = 1  # Minimum change in pixels to move the mouse
