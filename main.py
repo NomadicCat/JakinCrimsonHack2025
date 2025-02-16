@@ -4,7 +4,7 @@ import tkinter as tk
 import sys
 import cv2
 import shared
-
+from subprocess import call
 #from tkinter import ttk
 running = False
 background_thread = None
@@ -18,9 +18,9 @@ def update_sensitivity(value):
 
 def background_program():
     global running
-    import handRecon
     while running:
-        handRecon.handRecon()
+
+        call(["python", "handRecon.py"])
         time.sleep(0.1)
 
 def start_background_program():

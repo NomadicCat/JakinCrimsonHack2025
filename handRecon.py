@@ -9,7 +9,7 @@ from cvzone.HandTrackingModule import HandDetector
 from fontTools.merge.util import current_time
 
 import interactiveInterface
-import main
+
 
 
 
@@ -33,6 +33,7 @@ reset = 1
 
 # camera setup
 cap = cv2.VideoCapture(0)
+
 cap.set(3, width)
 cap.set(4,height)
 
@@ -57,26 +58,11 @@ last_execution_time = 0
 check_input = 0
 gesture_timers = {}  # Track timers for each gesture
 
-# def detect_gesture(gesture_active, method, input_delay, insert):
-#     global g_start_timer
-#
-#     if gesture_active:
-#
-#         if g_start_timer is None:
-#
-#             g_start_timer = time.time()  # Start timer when gesture is first detected
-#         else:
-#             elapsed_time = time.time() - g_start_timer
-#             if elapsed_time >= input_delay:
-#                 print("Gesture recognized after holding" + insert)
-#                 method()  # Trigger the method
-#                 g_start_timer = None  # Reset timer after triggering
-#
-#     else:
-#         g_start_timer = None  # Reset timer if gesture is not ac
+
 current_gesture = None
 previous_gesture = None
 gesture_activated = {}
+indexFinger = None
 
 def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id):
     global gesture_timers
@@ -143,6 +129,7 @@ fingers = [0, 0, 0, 0, 0]
 
 while True:
 
+
     # frame_count += 1
     # success, img = cap.read()
     # if frame_count % frame_skip_rate != 0:
@@ -154,47 +141,17 @@ while True:
 
     #get camera and hand
     success, img = cap.read()
+    if not success:
+        print("ee")
+        continue  # Skip iteration if camera frame is not successfully captured
+
     img = cv2.flip(img, 1)
     cv2.line(img, (0, gestureThreshold), (width, gestureThreshold), (255, 0, 0), 5)
     hands, img = detector.findHands(img, flipType=False)
     cv2.imshow('Image', img)
 
 
-    cy = gestureThreshold + 1
-
-
-
-
-    if hands:
-
-        hand = hands[0]
-        fingers = detector.fingersUp(hand)
-        cx,cy = hand['center']
-        lmList = hand['lmList']
-        indexFinger = lmList[0][0], lmList[0][1]
-        # Flip thumb detection manually for the correct hand
-        if hand["type"] == "Right":
-            fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
-            # print(fingers)
-        if hand["type"] == "Left":
-            fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
-            # print(fingers)
-
-        detect_gesture_once(
-            fingers == [0, 1, 0, 0, 1],
-            interactiveInterface.park,
-            1.0,
-            "parking",
-            "parking_gesture"  # Unique ID for click
-        )
-
-        detect_gesture_once(
-            fingers == [1, 1, 0, 0, 1],
-            interactiveInterface.drive,
-            1.0,
-            "drive",
-            "drive_gesture"  # Unique ID for click
-        )
+    # cy = gestureThreshold + 1
 
 
     while True:
