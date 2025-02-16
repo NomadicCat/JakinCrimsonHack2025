@@ -8,7 +8,7 @@ import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
 from pyautogui import leftClick
-
+import globals
 
 def get_active_window():
     # Get Active Window Title
@@ -47,6 +47,11 @@ def pressl():
 def click():
     pyautogui.click()
 
-def move_mouse(dx, dy): # Move the mouse by Δx and Δy
-   # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
-   pyautogui.moveRel(dx, dy)
+def move_mouse(dx, dy):
+    """Move the mouse based on dx, dy only if mouse_control_active is True."""
+    if globals.mouse_control_active:
+        pyautogui.moveRel(dx, dy)  # Move the mouse by relative delta values
+
+def enable_mouse_control():
+    globals.mouse_control_active = True
+    print("Mouse control enabled")
