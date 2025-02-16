@@ -13,6 +13,7 @@ from pyautogui import leftClick
 
 from subprocess import call
 
+parker = True
 
 # def get_active_window():
 #     # Get Active Window Title
@@ -103,33 +104,33 @@ def pause():
         print("Unsupported OS.")
 
 
-def control_music_back():
-    """Detects the focused application and controls music playback accordingly."""
-    active_app = get_active_window()
-
-    if active_app:
-        print(f"Active App: {active_app}")
-
-        # Check for Spotify
-        if "Spotify" in active_app or "spotify.exe" in active_app.lower():
-            if os.name == 'posix':  # macOS
-                try:
-                    call(["osascript", "-e", 'tell application "Spotify" to previous track'])
-                except Exception as e:
-                    print(f"Failed to control Spotify: {e}")
-            elif os.name == 'nt':  # Windows
-                pyautogui.hotkey("media_prev_track")
-            else:
-                print("Unsupported OS.")
-            print("Skipped to previous song on Spotify.")
-
-        # Check for YouTube in a browser
-        elif any(browser in active_app.lower() for browser in ["chrome", "firefox", "edge", "safari", "brave"]):
-            pyautogui.press('left')  # YouTube's seek backward shortcut
-            print("Rewound 5 seconds on YouTube.")
-
-        else:
-            print("No media application detected.")
+# def control_music_back():
+#     """Detects the focused application and controls music playback accordingly."""
+#     active_app = get_active_window()
+#
+#     if active_app:
+#         print(f"Active App: {active_app}")
+#
+#         # Check for Spotify
+#         if "Spotify" in active_app or "spotify.exe" in active_app.lower():
+#             if os.name == 'posix':  # macOS
+#                 try:
+#                     call(["osascript", "-e", 'tell application "Spotify" to previous track'])
+#                 except Exception as e:
+#                     print(f"Failed to control Spotify: {e}")
+#             elif os.name == 'nt':  # Windows
+#                 pyautogui.hotkey("media_prev_track")
+#             else:
+#                 print("Unsupported OS.")
+#             print("Skipped to previous song on Spotify.")
+#
+#         # Check for YouTube in a browser
+#         elif any(browser in active_app.lower() for browser in ["chrome", "firefox", "edge", "safari", "brave"]):
+#             pyautogui.press('left')  # YouTube's seek backward shortcut
+#             print("Rewound 5 seconds on YouTube.")
+#
+#         else:
+#             print("No media application detected.")
 
 def control_music_forward():
     """Detects the focused application and controls music playback accordingly."""
@@ -158,6 +159,34 @@ def control_music_forward():
 
         else:
             print("No media application detected.")
+def control_music_back():
+    """Detects the focused application and controls music playback accordingly."""
+    active_app = get_active_window()
+
+    if active_app:
+        print(f"Active App: {active_app}")
+
+        # Check for Spotify
+        if "Spotify" in active_app or "spotify.exe" in active_app.lower():
+            if os.name == 'posix':  # macOS
+                try:
+                    call(["osascript", "-e", 'tell application "Spotify" to previous track'])
+                except Exception as e:
+                    print(f"Failed to control Spotify: {e}")
+            elif os.name == 'nt':  # Windows
+                pyautogui.hotkey("media_next_track")
+            else:
+                print("Unsupported OS.")
+            print("rewind to last song on Spotify.")
+
+        # Check for YouTube in a browser
+        elif any(browser in active_app.lower() for browser in ["chrome", "firefox", "edge", "safari", "brave", "opera"]):
+            pyautogui.press('left')  # YouTube's seek backward shortcut
+            print("left 5 seconds on YouTube.")
+
+        else:
+            print("No media application detected.")
+
 def control_music_pause():
     """Detects the focused application and controls music playback accordingly."""
     active_app = get_active_window()
@@ -186,3 +215,11 @@ def control_music_pause():
         else:
             print("No media application detected.")
 
+def park():
+    global parker
+    parker = False
+
+def drive():
+
+    global parker
+    parker = True
