@@ -7,6 +7,9 @@ import pytweening
 from cvzone.HandTrackingModule import HandDetector
 import interactiveInterface
 
+class HandReconExit(Exception):  # Custom exception
+    pass
+
 
 pyautogui.PAUSE = 0
 #variables

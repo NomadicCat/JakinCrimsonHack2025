@@ -1,6 +1,7 @@
 import threading
 import time
 import tkinter as tk
+import sys
 
 #from tkinter import ttk
 running = False
@@ -66,6 +67,8 @@ def on_button_click():
         running = False
         if background_thread is not None:
             background_thread = False
+            sys.exit()
+
 
 
 # Add a button to the window
