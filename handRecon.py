@@ -1,8 +1,11 @@
 import cv2
 import os
-from cvzone.HandTrackingModule import HandDetector
-<<<<<<< HEAD
+import time
+
 import pyautogui
+import pytweening
+from cvzone.HandTrackingModule import HandDetector
+import interactiveInterface
 
 
 pyautogui.PAUSE = 0
@@ -10,18 +13,7 @@ pyautogui.PAUSE = 0
 width, height = 1280, 720
 gestureThreshold = 500 #how high the line
 last_index_finger_location = None
-last_time = 10
-clock = 0
-=======
-import interactiveInterface
 
-
-
-#variables
-width, height = 1280, 720
-gestureThreshold = 500 #how high the line
-playpause = [0,0,0,0,0]
->>>>>>> computer_macro
 
 
 
@@ -46,7 +38,7 @@ delta_y = 0
 
 
 while True:
-    print(clock)
+
     # frame_count += 1
     # success, img = cap.read()
     # if frame_count % frame_skip_rate != 0:
@@ -84,10 +76,8 @@ while True:
 
 
 
-
         if cy < gestureThreshold : #if hand is above line
 
-<<<<<<< HEAD
             #Gesture 1: mouse pointer
             if fingers == [0,1,1,0,0]:
                 if last_index_finger_location is not None:
@@ -96,7 +86,10 @@ while True:
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
-                    pyautogui.moveRel(delta_x, delta_y)
+                    interactiveInterface.move_mouse(delta_x,delta_y)
+
+                    # movement_threshold = 1  # Minimum change in pixels to move the mouse
+                    # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
                     # Update the previous index finger position
                 last_index_finger_location = indexFinger
             else:
@@ -109,42 +102,9 @@ while True:
 
 
 
-            # Geasture
+            # Gesture
             # if fingers == [1, 0,0,0,0]:
             #     print("left")
-
-
-=======
-            # Gesture 1 - Left
-            if fingers == [1, 0,0,0,0]:
-                interactiveInterface.printHand()
-
-
-            # Gesture 2 - right
-            if fingers == [0, 0,0,0,1]:
-                print("right")
-
-            # Gesture 2 - right
-            if fingers == [0, 1,1, 0, 0]:
-                print("FUCK YOU TOO")
->>>>>>> computer_macro
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     cv2.waitKey(1)

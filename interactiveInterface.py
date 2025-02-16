@@ -1,5 +1,13 @@
 import pyautogui, time, pygetwindow as gw, pyperclip
 
+import cv2
+import os
+import time
+
+import pyautogui
+import pytweening
+from cvzone.HandTrackingModule import HandDetector
+
 
 def get_active_window():
     # Get Active Window Title
@@ -17,7 +25,7 @@ def get_active_window():
     url = pyperclip.paste()
     return url
 
-print(get_active_window()) # Window URL for future reference
+# print(get_active_window()) # Window URL for future reference
 
 # Check Array and Activate Hotkey
 def printHand():
@@ -36,5 +44,5 @@ def pressl():
     pyautogui.press('l', presses=1)
 
 def move_mouse(dx, dy): # Move the mouse by Δx and Δy
-   pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
-   time.sleep(0.3)
+   # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
+   pyautogui.moveRel(dx, dy, duration=0.01, tween=pytweening.easeInQuad)
