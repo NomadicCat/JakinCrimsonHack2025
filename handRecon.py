@@ -16,8 +16,9 @@ width, height = 1280, 720
 gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
 global_start_timer = None
-g_start_timer = None
+
 sensitivity = 1
+reset = 1
 
 
 
@@ -47,29 +48,81 @@ COOLDOWN_TIME = 1.0
 input_delay = 1.0
 last_execution_time = 0
 check_input = 0
+gesture_timers = {}  # Track timers for each gesture
+
+# def detect_gesture(gesture_active, method, input_delay, insert):
+#     global g_start_timer
+#
+#     if gesture_active:
+#
+#         if g_start_timer is None:
+#
+#             g_start_timer = time.time()  # Start timer when gesture is first detected
+#         else:
+#             elapsed_time = time.time() - g_start_timer
+#             if elapsed_time >= input_delay:
+#                 print("Gesture recognized after holding" + insert)
+#                 method()  # Trigger the method
+#                 g_start_timer = None  # Reset timer after triggering
+#
+#     else:
+#         g_start_timer = None  # Reset timer if gesture is not ac
+current_gesture = None
+previous_gesture = None
+
+def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id):
+    global gesture_timers
+    global current_gesture, previous_gesture
 
 
-def detect_gesture(gesture_active, method, input_delay):
-    global g_start_timer
-    """
-    Detect a gesture with a hold duration based on the input_delay.
 
-    Args:
-        gesture_active (bool): Whether the gesture is currently active.
-        method (function): Function to execute when the gesture is held long enough.
-        input_delay (float): Time in seconds to hold the gesture before triggering.
-    """
     if gesture_active:
-        if g_start_timer is None:
-            g_start_timer = time.time()  # Start timer when gesture is first detected
+
+        if current_gesture != gesture_id:
+            # Reset the timer for this gesture
+            gesture_timers[gesture_id] = None
+            current_gesture = gesture_id  # Update current gesture
+
+        if gesture_id not in gesture_timers:
+            gesture_timers[gesture_id] = None
+
+        if gesture_timers[gesture_id] is None:
+            gesture_timers[gesture_id] = time.time()  # Start timer
         else:
-            elapsed_time = time.time() - g_start_timer
+            elapsed_time = time.time() - gesture_timers[gesture_id]
             if elapsed_time >= input_delay:
-                print("Gesture recognized after holding!")
-                method()  # Trigger the method
-                g_start_timer = None  # Reset timer after triggering
+                print(f"Gesture recognized after holding {insert}")
+                method()
+                gesture_timers[gesture_id] = None  # Reset timer
     else:
-        g_start_timer = None  # Reset timer if gesture is not active
+        # Reset timer if gesture is not active
+        if gesture_id in gesture_timers:
+            gesture_timers[gesture_id] = None
+
+
+
+
+
+def detect_gesture(gesture_active, method, input_delay, insert, gesture_id):
+
+
+    if gesture_active:
+
+        if gesture_id not in gesture_timers:
+            gesture_timers[gesture_id] = None
+
+        if gesture_timers[gesture_id] is None:
+            gesture_timers[gesture_id] = time.time()  # Start timer
+        else:
+            elapsed_time = time.time() - gesture_timers[gesture_id]
+            if elapsed_time >= input_delay:
+                print(f"Gesture recognized after holding {insert}")
+                method()
+                gesture_timers[gesture_id] = None  # Reset timer
+    else:
+        # Reset timer if gesture is not active
+        if gesture_id in gesture_timers:
+            gesture_timers[gesture_id] = None
 
 
 while True:
@@ -144,6 +197,7 @@ while True:
         #gesture 2: press k
             # Gesture 2: Press K (hold gesture for input_delay seconds)
             if fingers == [1, 1, 0, 0, 1]:
+                gesture_start_time = None
                 if gesture_start_time is None:
                     gesture_start_time = time.time()  # Start the timer
                 else:
@@ -155,17 +209,41 @@ while True:
             else:
                 gesture_start_time = None  # Reset if gesture is not active
 
+            # Gesture: Click (fingers == [1,1,0,0,0])
+            detect_gesture(
+                fingers == [1, 1, 0, 0, 0],
+                interactiveInterface.click,
+                1.0,
+                "click",
+                "click_gesture"  # Unique ID for click
+            )
 
+            # Gesture: back
+            detect_gesture_once(
+                fingers == [1, 0, 0, 0, 0],
+                interactiveInterface.control_music_back,
+                0.5,
+                "back",
+                "back_gesture"  # Unique ID for pause
+            )
 
-            #gesture 3: click
-            if fingers == [1,1,0,0,0]:
-                detect_gesture(fingers == [1,1,0,0,0],interactiveInterface.click, 1.0)
-                # current_time = 0
-                # current_time = time.time()
-                # if current_time - last_execution_time > COOLDOWN_TIME :
-                #     print("Gesture recognized! Running interactiveInterface.click()...")
-                #     interactiveInterface.click()  # Trigger your function
-                #     last_execution_time = current_time  # Update the
+            #go foward
+            detect_gesture_once(
+                fingers == [0, 0, 0, 0, 1],
+                interactiveInterface.control_music_forward,
+                0.5,
+                "forward",
+                "forward_gesture"  # Unique ID for pause
+            )
+            #pause
+            detect_gesture_once(
+                fingers == [1, 0, 0, 0, 1],
+                interactiveInterface.control_music_pause,
+                0.5,
+                "pause",
+                "pause_gesture"  # Unique ID for pause
+            )
+
 
 
     key = cv2.waitKey(1)  # Capture keypress
