@@ -49,4 +49,4 @@ def click():
 
 def move_mouse(dx, dy): # Move the mouse by Δx and Δy
    # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
-   pyautogui.moveRel(dx, dy, duration=0.01, tween=pytweening.easeInQuad)
+   pyautogui.moveRel(dx, dy)

@@ -5,6 +5,8 @@ import time
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
+from fontTools.merge.util import current_time
+
 import interactiveInterface
 
 
@@ -13,6 +15,10 @@ pyautogui.PAUSE = 0
 width, height = 1280, 720
 gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
+global_start_timer = None
+g_start_timer = None
+sensitivity = 1
+
 
 
 
@@ -38,7 +44,33 @@ delta_y = 0
 
 
 COOLDOWN_TIME = 1.0
+input_delay = 1.0
 last_execution_time = 0
+check_input = 0
+
+
+def detect_gesture(gesture_active, method, input_delay):
+    global g_start_timer
+    """
+    Detect a gesture with a hold duration based on the input_delay.
+
+    Args:
+        gesture_active (bool): Whether the gesture is currently active.
+        method (function): Function to execute when the gesture is held long enough.
+        input_delay (float): Time in seconds to hold the gesture before triggering.
+    """
+    if gesture_active:
+        if g_start_timer is None:
+            g_start_timer = time.time()  # Start timer when gesture is first detected
+        else:
+            elapsed_time = time.time() - g_start_timer
+            if elapsed_time >= input_delay:
+                print("Gesture recognized after holding!")
+                method()  # Trigger the method
+                g_start_timer = None  # Reset timer after triggering
+    else:
+        g_start_timer = None  # Reset timer if gesture is not active
+
 
 while True:
 
@@ -79,18 +111,27 @@ while True:
 
 
 
-        if cy < gestureThreshold : #if hand is above line
+        if True: #if hand is above line cy < gestureThreshold
 
             #Gesture 1: mouse pointer
-            if fingers == [1,1,1,0,0]:
+            if fingers == [1,1,1,0,0] or fingers == [0,0,0,0,0]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
 
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
-                    sensitivity = 1.5
-                    interactiveInterface.move_mouse(delta_x * sensitivity ,delta_y * sensitivity)
+                    if fingers == [1,1,1,0,0]:
+                        sensitivity = 0.5
+                    if fingers == [0,0,0,0,0]:
+                        sensitivity = 3
+
+
+
+
+
+
+                interactiveInterface.move_mouse(delta_x * sensitivity ,delta_y * sensitivity)
 
                     # movement_threshold = 1  # Minimum change in pixels to move the mouse
                     # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
@@ -99,31 +140,44 @@ while True:
             else:
                 # Reset the previous index finger position if the gesture is not active
                 last_index_finger_location = None
+
         #gesture 2: press k
-        if fingers == [1,1,0,0,1]:
-            current_time = 0
-            current_time = time.time()
-            if current_time - last_execution_time > COOLDOWN_TIME :
-                print("Gesture recognized! Running interactiveInterface.pressk()...")
-                interactiveInterface.pressk()  # Trigger your function
-                last_execution_time = current_time  # Update the
-
-        #gesture 3: click
-        if fingers == [1,1,0,0,0]:
-            current_time = 0
-            current_time = time.time()
-            if current_time - last_execution_time > COOLDOWN_TIME :
-                print("Gesture recognized! Running interactiveInterface.click()...")
-                interactiveInterface.click()  # Trigger your function
-                last_execution_time = current_time  # Update the
+            # Gesture 2: Press K (hold gesture for input_delay seconds)
+            if fingers == [1, 1, 0, 0, 1]:
+                if gesture_start_time is None:
+                    gesture_start_time = time.time()  # Start the timer
+                else:
+                    elapsed_time = time.time() - gesture_start_time
+                    if elapsed_time >= input_delay:
+                        print("Gesture recognized after holding! Running interactiveInterface.pressk()...")
+                        interactiveInterface.pressk()
+                        gesture_start_time = None  # Reset after triggering
+            else:
+                gesture_start_time = None  # Reset if gesture is not active
 
 
 
-            # Gesture
-            # if fingers == [1, 0,0,0,0]:
-            #     print("left")
+            #gesture 3: click
+            if fingers == [1,1,0,0,0]:
+                detect_gesture(fingers == [1,1,0,0,0],interactiveInterface.click, 1.0)
+                # current_time = 0
+                # current_time = time.time()
+                # if current_time - last_execution_time > COOLDOWN_TIME :
+                #     print("Gesture recognized! Running interactiveInterface.click()...")
+                #     interactiveInterface.click()  # Trigger your function
+                #     last_execution_time = current_time  # Update the
+
 
     key = cv2.waitKey(1)  # Capture keypress
     if key == ord('q'):
         break
+
+
+
+
+
+
+
+
+
 
