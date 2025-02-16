@@ -79,7 +79,8 @@ def click():
 
 def move_mouse(dx, dy): # Move the mouse by Δx and Δy
    # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
-   pyautogui.moveRel(dx, dy)
+   current_x, current_y = pyautogui.position()
+   pyautogui.moveTo(current_x + dx,current_y + dy)
 
 def skip_right():
 
@@ -223,3 +224,17 @@ def drive():
 
     global parker
     parker = True
+
+def scrollDown(steps=3, interval=0.01):
+    """Scroll down smoothly with smaller steps."""
+    for _ in range(steps):
+        pyautogui.scroll(-1)  # Scroll down by one step
+        time.sleep(interval)  # Wait briefly between steps
+
+
+def scrollUp(steps=3, interval=0.01):
+    """Scroll up smoothly with smaller steps."""
+    for _ in range(steps):
+        pyautogui.scroll(1)  # Scroll up by one step
+        time.sleep(interval)  # Wait briefly between steps
+

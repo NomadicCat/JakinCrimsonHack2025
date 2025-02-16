@@ -244,7 +244,7 @@ while True:
             detect_gesture_once(
                 fingers == [1, 0, 0, 0, 0],
                 interactiveInterface.control_music_back,
-                0.2,
+                0.6,
                 "back",
                 "back_gesture"  # Unique ID for pause
             )
@@ -253,7 +253,7 @@ while True:
             detect_gesture_once(
                 fingers == [0, 1, 0, 0, 0],
                 interactiveInterface.control_music_forward,
-                0.2,
+                0.6,
                 "forward",
                 "forward_gesture"  # Unique ID for pause
             )
@@ -261,10 +261,27 @@ while True:
             detect_gesture_once(
                 fingers == [1, 0, 0, 0, 1],
                 interactiveInterface.control_music_pause,
-                0.2,
+                0.6,
                 "pause",
                 "pause_gesture"  # Unique ID for pause
             )
+
+            # pause
+            detect_gesture(
+                fingers == [0, 1, 1, 0, 0],
+                interactiveInterface.scrollDown,
+                0.0,
+                "scrollDown",
+                "scrollDown_gesture"  # Unique ID for pause
+            )
+            detect_gesture(
+                fingers == [0, 1, 1, 0, 1],
+                interactiveInterface.scrollUp,
+                0.0,
+                "scrollUp",
+                "scrollUp_gesture"  # Unique ID for pause
+            )
+
 
 
 
