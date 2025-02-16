@@ -2,6 +2,7 @@ import threading
 import time
 import tkinter as tk
 import sys
+import cv2
 
 #from tkinter import ttk
 running = False
@@ -68,6 +69,7 @@ def on_button_click():
         if background_thread is not None:
             background_thread = False
             running = False
+            cv2.destroyAllWindows()
 
 
 
