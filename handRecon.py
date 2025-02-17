@@ -23,17 +23,31 @@ sensitivity = 1
 globals.g_start_timer = None
 mouse_control_active = False
 globals.holding = 0.0
-
+theTime = 0.0
 globals.novelty = False
 
+close = False
+stuck = False
+off = True
+streak = False
 
+countFromHolding = 0.0
+countFromHoldingStart = 0.0
+startedCountingFrom = False
+
+from3 = False
+touching = False
+
+countAfterHolding = 0.0
+countAfterHoldingStart = 0.0
+startedCountingHold = False
 # camera setup
 cap = cv2.VideoCapture(0)
 cap.set(3, width)
 cap.set(4,height)
 
 
-#hand Dector
+#hand Detector
 detector = HandDetector(detectionCon=0.8, maxHands=1)
 
 # frame_count = 0  # Initialize frame count
@@ -42,11 +56,13 @@ delta_x = 0
 delta_y = 0
 
 
-COOLDOWN_TIME = 1.0
+COOLDOWN_TIME = 0.2
+
 last_execution_time = 0
 check_input = 0
 
 g_start_timer = None
+
 
 
 def detect_gesture(gesture_active, method, input_delay):
@@ -112,12 +128,47 @@ while True:
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
 
+                    touching = distance < distance1
 
-                    detect_gesture(distance < distance1, method=interactiveInterface.enable_mouse_control, input_delay=0.0)
+                    if touching and stuck: #Connected and Was Connect
+                        close = True
 
-                    if globals.mouse_control_active:
+                        from3 = False
 
+
+                    elif touching and not stuck: #Connected and !Was Connected
+                        close = True
+                        stuck = True
+
+                        countFromHoldingStart = time.time()
+
+                        from3 = False
+
+
+                    elif not touching and stuck: #!Connected and Was Connected
+
+                        close = False
+                        stuck = False
+
+                        theTime = time.time() - countFromHoldingStart
+
+                        countFromHolding = 0.0
+
+                        from3 = True
+
+                    elif not touching and not stuck: #!Connected and !Was Connected
+
+                        close = False
+                        from3 = False
+
+                    if close:
                         interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
+                        streak = True
+                    else:
+                        if theTime < COOLDOWN_TIME and from3:
+                            print("theTime: ", theTime, "COOLDOWN_TIME: ", COOLDOWN_TIME)
+                            interactiveInterface.click()
+                            theTime = 0.0
 
 
 

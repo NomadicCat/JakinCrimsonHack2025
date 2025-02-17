@@ -47,10 +47,11 @@ def pressl():
 def click():
     pyautogui.click()
 
-def move_mouse(dx, dy):
-    """Move the mouse based on dx, dy only if mouse_control_active is True."""
-    if globals.mouse_control_active:
-        pyautogui.moveRel(dx, dy)  # Move the mouse by relative delta values
+def move_mouse(dx, dy):  # Move the mouse by Δx and Δy
+    # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
+    current_x, current_y = pyautogui.position()
+    pyautogui.moveTo(current_x + dx, current_y + dy)
+
 
 def enable_mouse_control():
     globals.mouse_control_active = True
