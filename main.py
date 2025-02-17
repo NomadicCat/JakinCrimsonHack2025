@@ -55,7 +55,7 @@ if threading.current_thread().name == "MainThread":
     root.title("Interface")
 
     # Add a label with the text "no hands"
-    main_screen = tk.Label(root, text="blue hands", font=("Helvetica", 80, "bold"))
+    main_screen = tk.Label(root, text="blue hands", font=("Helvetica", 80, "bold"), fg="blue")
     main_screen.place(relx=.5, y=100, anchor=tk.CENTER)
     subtext = tk.Label(root, text="developed by Team Jakin", font=("Helvetica", 20, "bold"))
     subtext.place(relx=.5, y=165, anchor=tk.CENTER)
@@ -67,7 +67,7 @@ if threading.current_thread().name == "MainThread":
     # Define the function to be triggered by the button
     def on_button_click():
         global running, background_thread
-        # Check the current button text and toggle it
+        # Check the current button text and toggle itblue
         if button.cget("text") == "enable":
             button.config(text="Q to exit",
             font=("Helvetica", 35))# Change text to "Q to exit"

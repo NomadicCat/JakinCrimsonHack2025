@@ -17,7 +17,6 @@ gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
 global_start_timer = None
 
-sensitivity = 1
 reset = 1
 
 
@@ -206,7 +205,6 @@ while True:
 
             # Gesture 1: mouse pointer
             if fingers == [0,0,1,1,1] or fingers == [1,1,1,1,1] or fingers == [0,1,1,1,1] or fingers == [1,0,1,1,1]:
-                print("finger")
                 index_finger_tip = lmList[8][0:2]  # (x, y) of index fingertip
                 thumb_tip = lmList[4][0:2]  # (x, y) of thumb tip
 
@@ -220,7 +218,6 @@ while True:
                                                               color=(0, 255, 0), scale=10)
 
                 if last_index_finger_location is not None:
-                    print("last finger location")
                     # Calculate the change in position
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
@@ -260,29 +257,32 @@ while True:
                         from3 = False
 
                     if close:
-                        interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
+                        a = sensitivity * 3
+                        interactiveInterface.move_mouse(delta_x * a, delta_y * a)
                         streak = True
                     else:
                         if theTime < COOLDOWN_TIME and from3:
-                            print("theTime: ", theTime, "COOLDOWN_TIME: ", COOLDOWN_TIME)
+                            print("Clicked")
                             interactiveInterface.click()
                             theTime = 0.0
 
                 last_index_finger_location = indexFinger
 
             elif fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
+
+                innerSensitivity = 0
+
                 if last_index_finger_location is not None:
                     # Calculate the change in position
-
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
                     if fingers == [1, 1, 1, 0, 0]:
-                        sensitivity = 0.5
+                        innerSensitivity = sensitivity * 1
                     if fingers == [0, 0, 0, 0, 0]:
-                        sensitivity = 3
+                        innerSensitivity = sensitivity * 5
 
-                interactiveInterface.move_mouse(delta_x * sensitivity, delta_y * sensitivity)
+                interactiveInterface.move_mouse(delta_x * innerSensitivity, delta_y * innerSensitivity)
 
                 # movement_threshold = 1  # Minimum change in pixels to move the mouse
                     # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
