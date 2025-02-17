@@ -47,7 +47,7 @@ close = False
 stuck = False
 off = True
 streak = False
-
+theTime = 0.0
 
 
 
@@ -206,7 +206,21 @@ while True:
 
             # Gesture 1: mouse pointer
             if fingers == [0,0,1,1,1] or fingers == [1,1,1,1,1] or fingers == [0,1,1,1,1] or fingers == [1,0,1,1,1]:
+                print("finger")
+                index_finger_tip = lmList[8][0:2]  # (x, y) of index fingertip
+                thumb_tip = lmList[4][0:2]  # (x, y) of thumb tip
+
+                distance, info, img = detector.findDistance(index_finger_tip, thumb_tip, img, color=(0, 255, 0),
+                                                            scale=10)
+
+                index_finger_mcp = lmList[5][0:2]  # (x, y) of index fingertip
+                index_finger_pip = lmList[6][0:2]  # (x, y) of thumb tip
+
+                distance1, info2, img = detector.findDistance(index_finger_mcp, index_finger_pip, img,
+                                                              color=(0, 255, 0), scale=10)
+
                 if last_index_finger_location is not None:
+                    print("last finger location")
                     # Calculate the change in position
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
