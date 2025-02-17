@@ -58,7 +58,7 @@ delta_x = 0
 delta_y = 0
 
 
-COOLDOWN_TIME = 1.0
+COOLDOWN_TIME = 0.2
 input_delay = 1.0
 last_execution_time = 0
 check_input = 0
@@ -268,7 +268,9 @@ while True:
                             interactiveInterface.click()
                             theTime = 0.0
 
-            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
+                last_index_finger_location = indexFinger
+
+            elif fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
 

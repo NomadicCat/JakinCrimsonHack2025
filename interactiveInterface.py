@@ -228,7 +228,8 @@ def drive():
 def scrollDown(steps=3, interval=0.01):
     """Scroll down smoothly with smaller steps."""
     if os.name == 'nt':  # Windows
-        pyautogui.scroll(-20)
+        for _ in range(steps):
+            pyautogui.scroll(-20)
     else:
         for _ in range(steps):
             pyautogui.scroll(-1)  # Scroll down by one step
@@ -237,7 +238,8 @@ def scrollDown(steps=3, interval=0.01):
 
 def scrollUp(steps=3, interval=0.01):
     if os.name == 'nt':  # Windows
-        pyautogui.scroll(20)
+        for _ in range(steps):
+            pyautogui.scroll(20)
     else:
 
         """Scroll up smoothly with smaller steps."""
