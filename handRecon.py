@@ -33,6 +33,20 @@ cap.set(4,height)
 #hand Dector
 detector = HandDetector(detectionCon=0.8, maxHands=1)
 
+#Hand Mouse Variables
+countAfterHolding = 0.0
+countAfterHoldingStart = 0.0
+startedCountingHold = False
+countFromHolding = 0.0
+countFromHoldingStart = 0.0
+startedCountingFrom = False
+
+from3 = False
+touching = False
+close = False
+stuck = False
+off = True
+streak = False
 
 
 
@@ -191,6 +205,55 @@ while True:
         if interactiveInterface.parker:  # if hand is above line cy < gestureThreshold
 
             # Gesture 1: mouse pointer
+            if fingers == [0,0,1,1,1] or fingers == [1,1,1,1,1] or fingers == [0,1,1,1,1] or fingers == [1,0,1,1,1]:
+                if last_index_finger_location is not None:
+                    # Calculate the change in position
+                    delta_x = indexFinger[0] - last_index_finger_location[0]
+                    delta_y = indexFinger[1] - last_index_finger_location[1]
+                    # Move the mouse pointer
+
+                    touching = distance < distance1
+
+                    if touching and stuck: #Connected and Was Connect
+                        close = True
+
+                        from3 = False
+
+
+                    elif touching and not stuck: #Connected and !Was Connected
+                        close = True
+                        stuck = True
+
+                        countFromHoldingStart = time.time()
+
+                        from3 = False
+
+
+                    elif not touching and stuck: #!Connected and Was Connected
+
+                        close = False
+                        stuck = False
+
+                        theTime = time.time() - countFromHoldingStart
+
+                        countFromHolding = 0.0
+
+                        from3 = True
+
+                    elif not touching and not stuck: #!Connected and !Was Connected
+
+                        close = False
+                        from3 = False
+
+                    if close:
+                        interactiveInterface.move_mouse(delta_x * 3, delta_y * 3)
+                        streak = True
+                    else:
+                        if theTime < COOLDOWN_TIME and from3:
+                            print("theTime: ", theTime, "COOLDOWN_TIME: ", COOLDOWN_TIME)
+                            interactiveInterface.click()
+                            theTime = 0.0
+
             if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
