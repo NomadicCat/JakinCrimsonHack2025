@@ -1,7 +1,7 @@
 import cv2
 import os
 import time
-
+import shared
 import pyautogui
 import pytweening
 from cvzone.HandTrackingModule import HandDetector
@@ -257,7 +257,7 @@ while True:
                         from3 = False
 
                     if close:
-                        a = sensitivity * 3
+                        a = shared.sensitivity * 2
                         interactiveInterface.move_mouse(delta_x * a, delta_y * a)
                         streak = True
                     else:
@@ -278,9 +278,9 @@ while True:
                     delta_y = indexFinger[1] - last_index_finger_location[1]
                     # Move the mouse pointer
                     if fingers == [1, 1, 1, 0, 0]:
-                        innerSensitivity = sensitivity * 1
+                        innerSensitivity = shared.sensitivity * 0.5
                     if fingers == [0, 0, 0, 0, 0]:
-                        innerSensitivity = sensitivity * 5
+                        innerSensitivity = shared.sensitivity * 4
 
                 interactiveInterface.move_mouse(delta_x * innerSensitivity, delta_y * innerSensitivity)
 
