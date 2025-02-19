@@ -1,3 +1,5 @@
+import tempfile
+
 import pyautogui, time, pygetwindow as gw, pyperclip
 
 import cv2
@@ -52,39 +54,12 @@ from tempfile import NamedTemporaryFile
 
 
 
-def beep(freq, duration):
-
-    def play_beep():
-        volume = 0.1
-        volume = max(0.0, min(volume, 1.0))
-
-        sample_rate = 44100  # Sampling rate in Hz
-        t = np.linspace(0, duration / 1000, int(sample_rate * duration / 1000), False)  # Time points
-        note = np.sin(freq * t * 2 * np.pi)  # Sine wave for the desired frequency
-        audio = (note * (2 ** 15 - 1) * volume).astype(np.int16) # Normalize audio
-        audio = audio.astype(np.int16)  # Convert to 16-bit PCM format
-
-        # Use a unique temporary file for each thread
-        with NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-            file_name = temp_file.name
-
-        try:
-            # Create the .wav file
-            with wave.open(file_name, 'wb') as file:
-                file.setnchannels(1)  # Mono audio
-                file.setsampwidth(2)  # 2 bytes (16 bits per sample)
-                file.setframerate(sample_rate)  # Sampling rate
-                file.writeframes(audio.tobytes())  # Write the audio frames
-
-            # Play the sound
-            playsound(file_name)
-        finally:
-            # Always remove the file after playing
-            if os.path.exists(file_name):
-                os.remove(file_name)
+def beep(sound):
+    def beeps():
+        playsound(sound)
 
     # Run the play_beep function in a separate thread
-    beep_thread = threading.Thread(target=play_beep)
+    beep_thread = threading.Thread(target=beeps)
     beep_thread.start()
 
 
@@ -228,7 +203,7 @@ def control_music_forward():
 
         else:
             print("No media application detected.")
-            
+
 def control_music_back():
     """Detects the focused application and controls music playback accordingly."""
     active_app = get_active_window()
@@ -288,13 +263,13 @@ def control_music_pause():
 
 def park():
     global parker
-    beep(220, 50)
+    beep("sound/566887__lennartgreen__click-metronome-atonal-low.wav")
     parker = False
 
 def drive():
 
     global parker
-    beep(440, 50)
+    beep("sound/29237__junggle__btn057.wav")
     parker = True
 
 def scrollDown(steps=3, interval=0.01):
