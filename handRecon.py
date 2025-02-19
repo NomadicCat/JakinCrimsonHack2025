@@ -12,7 +12,9 @@ import interactiveInterface
 
 pyautogui.PAUSE = 0
 #variables
-width, height = 1280, 720
+parking = True
+width, height = 640, 360
+
 gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
 global_start_timer = None
@@ -71,9 +73,56 @@ current_gesture = None
 previous_gesture = None
 gesture_activated = {}
 
-def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id):
+
+
+
+
+
+
+def detect_parking(gesture_active, method, input_delay, insert, gesture_id):
     global gesture_timers
     global current_gesture, previous_gesture
+
+    if gesture_active:
+
+        if current_gesture != gesture_id:
+            # Reset the timer for this gesture
+            gesture_timers[gesture_id] = None
+            gesture_activated[gesture_id] = False
+            current_gesture = gesture_id  # Update current gesture
+
+        if gesture_id not in gesture_timers:
+            gesture_timers[gesture_id] = None
+
+        if gesture_timers[gesture_id] is None:
+            gesture_timers[gesture_id] = time.time()  # Start timer
+
+        elapsed_time = time.time() - gesture_timers[gesture_id]
+        if elapsed_time >= input_delay and not gesture_activated[gesture_id]:
+            print(f"Gesture recognized after holding {insert}")
+            method()
+            # gesture_timers[gesture_id] = None  # Reset timer
+            gesture_activated[gesture_id] = True
+    else:
+        # Reset timer and activation state if gesture is not active
+        if gesture_id in gesture_timers:
+            gesture_timers[gesture_id] = None
+            gesture_activated[gesture_id] = False
+
+        # Update previous gesture when the gesture is no longer active
+        if current_gesture == gesture_id:
+            previous_gesture = current_gesture
+            current_gesture = None
+
+
+
+def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id, ):
+    global gesture_timers
+    global current_gesture, previous_gesture
+
+
+
+
 
 
 
@@ -95,6 +144,10 @@ def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id)
         if elapsed_time >= input_delay and not gesture_activated[gesture_id]:
             print(f"Gesture recognized after holding {insert}")
             method()
+            if fingers == [1, 1, 0, 0, 0]:
+                print("click")
+            else:
+                interactiveInterface.park()
             # gesture_timers[gesture_id] = None  # Reset timer
             gesture_activated[gesture_id] = True
     else:
@@ -130,8 +183,10 @@ def detect_gesture(gesture_active, method, input_delay, insert, gesture_id):
         if gesture_id in gesture_timers:
             gesture_timers[gesture_id] = None
 
-parking = True
 
+
+
+#hand detection Loop
 while True:
 
     # frame_count += 1
@@ -148,6 +203,7 @@ while True:
     img = cv2.flip(img, 1)
     cv2.line(img, (0, gestureThreshold), (width, gestureThreshold), (255, 0, 0), 5)
     hands, img = detector.findHands(img, flipType=False)
+
     cv2.imshow('Image', img)
 
 
@@ -170,28 +226,32 @@ while True:
             fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
             # print(fingers)
 
-        detect_gesture_once(
+
+
+
+        detect_parking(
             fingers == [0, 1, 0, 0, 1],
             interactiveInterface.park,
-            1.0,
+            0.1,
             "parking",
-            "parking_gesture"  # Unique ID for click
+            "parking_gesture"  # Unique ID for
         )
 
-        detect_gesture_once(
+        detect_parking(
             fingers == [1, 1, 0, 0, 1],
             interactiveInterface.drive,
-            1.0,
+            0.1,
             "drive",
-            "drive_gesture"  # Unique ID for click
+            "drive_gesture"  # Unique ID for
         )
 
+        # print(interactiveInterface.parker)
 
+        if interactiveInterface.parker:  # not cy < gestureThreshold
 
-        if interactiveInterface.parker:  # if hand is above line cy < gestureThreshold
 
             # Gesture 1: mouse pointer
-            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 0, 0, 0]:
+            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
                 if last_index_finger_location is not None:
                     # Calculate the change in position
 
@@ -200,8 +260,9 @@ while True:
                     # Move the mouse pointer
                     if fingers == [1, 1, 1, 0, 0]:
                         sensitivity = 0.5
-                    if fingers == [0, 0, 0, 0, 0]:
-                        sensitivity = 3
+                    if fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
+                        sensitivity = 4
+
 
                 interactiveInterface.move_mouse(delta_x * sensitivity, delta_y * sensitivity)
 
@@ -232,19 +293,26 @@ while True:
 
 
 
-            detect_gesture(
+            detect_gesture_once(
                 fingers == [1, 1, 0, 0, 0],
                 interactiveInterface.click,
-                1.0,
+                0.1,
                 "click",
                 "click_gesture"  # Unique ID for click
+            )
+            detect_gesture(
+                fingers == [0, 0, 1, 0, 0],
+                interactiveInterface.spam_click,
+                0,
+                "clickSpam",
+                "clickSpam_gesture"  # Unique ID for click
             )
 
             # Gesture: back
             detect_gesture_once(
                 fingers == [1, 0, 0, 0, 0],
                 interactiveInterface.control_music_back,
-                0.6,
+                .5,
                 "back",
                 "back_gesture"  # Unique ID for pause
             )
@@ -253,7 +321,7 @@ while True:
             detect_gesture_once(
                 fingers == [0, 1, 0, 0, 0],
                 interactiveInterface.control_music_forward,
-                0.6,
+                .5,
                 "forward",
                 "forward_gesture"  # Unique ID for pause
             )
@@ -261,7 +329,7 @@ while True:
             detect_gesture_once(
                 fingers == [1, 0, 0, 0, 1],
                 interactiveInterface.control_music_pause,
-                0.6,
+                0.2,
                 "pause",
                 "pause_gesture"  # Unique ID for pause
             )
