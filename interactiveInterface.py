@@ -16,7 +16,9 @@ import wave
 import numpy as np
 import threading
 import test
-
+import win32gui
+import win32process
+import psutil
 from subprocess import call
 
 import kalmanfilter
@@ -61,9 +63,7 @@ def get_active_window():
             return None
     elif os.name == "nt":  # Windows
         try:
-            import win32gui
-            import win32process
-            import psutil
+
 
             hwnd = win32gui.GetForegroundWindow()
             _, pid = win32process.GetWindowThreadProcessId(hwnd)
@@ -86,74 +86,26 @@ def spam_click():
     pyautogui.click()
 
 
-mouse_lock = threading.Lock()
-current_stop_event = None
-current_thread = None
-def mouse_transition(new_x, new_y, stop_event):
-    global current_stop_event, current_thread
-    current_x, current_y = pyautogui.position()
-    total_duration = 0.1  # seconds
-    step_interval = 0.01  # seconds per step
-    steps = int(total_duration / step_interval)
 
-    if steps == 0:
-        pyautogui.moveTo(new_x, new_y)
-        return
-
-    dx = (new_x - current_x) / steps
-    dy = (new_y - current_y) / steps
-
-    for i in range(steps):
-        if stop_event.is_set():
-            break
-        target_x = current_x + dx * (i + 1)
-        target_y = current_y + dy * (i + 1)
-        pyautogui.moveTo(target_x, target_y, duration=step_interval)
-
-    # Ensure final position if not interrupted
-    if not stop_event.is_set():
-        pyautogui.moveTo(new_x, new_y)
-
-    # Clean up global variables
-    with mouse_lock:
-        if current_stop_event is stop_event:
-            current_stop_event = None
-            current_thread = None
-
-
+prev_x, prev_y = 0,0
 def move_mouse(in_x, in_y, sens):
-   global current_stop_event, current_thread
+   global prev_x, prev_y
+   dampening = 0.9
 
    screen_width, screen_height = pyautogui.size()
    current_x, current_y = pyautogui.position()
 
-   filtered_x, filtered_y = kalmanfilter.kalman_filter(current_x + (in_x * sens), current_y + (in_y * sens), sens)
+   filtered_x, filtered_y = kalmanfilter.kalman_filter((in_x * sens),(in_y * sens), sens)
 
-   safe_margin= 10
-   new_x = max(safe_margin,min(screen_width - safe_margin - 1, filtered_x))
-   new_y = max(safe_margin,min(screen_height - safe_margin - 1, filtered_y))
+   dampen_x = prev_x + (filtered_x - prev_x) * ( 1 - dampening)
+   dampen_y = prev_y + (filtered_y - prev_y) * ( 1 - dampening)
+
+   prev_x = dampen_x
+   prev_y = dampen_y
+
+   pyautogui.moveRel(dampen_x, dampen_y)
 
 
-   movement_threshold = 0
-   delta_x = abs(new_x - current_x)
-   delta_y = abs(new_y - current_y)
-
-   if delta_x > movement_threshold or delta_y > movement_threshold:
-       with mouse_lock:
-           # Signal previous thread to stop
-           if current_stop_event is not None:
-               current_stop_event.set()
-
-           # Create new stop event and thread
-           stop_event = threading.Event()
-           thread = threading.Thread(target=mouse_transition, args=(new_x, new_y, stop_event))
-
-           # Update global variables
-           current_stop_event = stop_event
-           current_thread = thread
-
-       # Start the new thread
-       thread.start()
 
 
 def skip_right():
