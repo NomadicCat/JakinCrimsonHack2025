@@ -37,11 +37,13 @@ kalman.errorCovPost = np.eye(4, dtype=np.float32)
 # Initialize state (x, y, vx, vy) to zeros
 kalman.statePost = np.zeros((4, 1), np.float32)
 
-kalman.measurementNoiseCov *= 20.0
+# kalman.measurementNoiseCov *= 10
 
 
-def kalman_filter(x,y):
+def kalman_filter(x,y, noise):
     global kalman
+    kalman.measurementNoiseCov = np.eye(2, dtype=np.float32) * 1e-1
+    kalman.measurementNoiseCov *= (noise * 2)
     predicted_state = kalman.predict()
     predicted_x, predicted_y = predicted_state[0], predicted_state[1]
     measurement = np.array([[x], [y]], dtype=np.float32)

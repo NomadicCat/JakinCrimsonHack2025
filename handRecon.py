@@ -267,26 +267,18 @@ while True:
 
         if interactiveInterface.parker:  # not cy < gestureThreshold
 
-
-            # Gesture 1: mouse pointer
-            # Gesture 1: mouse pointer
-
-
-
-
-
             if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
 
 
                 if last_index_finger_location is not None:
-                    test.move_dot(indexFinger[0], indexFinger[1], 20, "red")
+
                     # Calculate the change in position
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
 
                     # Move the mouse pointer
                 if fingers == [1, 1, 1, 0, 0]:
-                    innerSensitivity = 12
+                    innerSensitivity = 6
 
 
                 if fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
