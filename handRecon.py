@@ -8,12 +8,15 @@ from cvzone.HandTrackingModule import HandDetector
 from fontTools.merge.util import current_time
 
 import interactiveInterface
+import shared
+import test
 
 
 pyautogui.PAUSE = 0
 #variables
 parking = True
 width, height = 640, 360
+innerSensitivity = shared.sensitivity
 
 gestureThreshold = 1100 #how high the line
 last_index_finger_location = None
@@ -21,6 +24,10 @@ global_start_timer = None
 
 sensitivity = 1
 reset = 1
+
+
+
+# pyautogui.PAUSE = 0
 
 
 
@@ -36,7 +43,21 @@ cap.set(4,height)
 detector = HandDetector(detectionCon=0.8, maxHands=1)
 
 
+#Hand Mouse Variables
+countAfterHolding = 0.0
+countAfterHoldingStart = 0.0
+startedCountingHold = False
+countFromHolding = 0.0
+countFromHoldingStart = 0.0
+startedCountingFrom = False
 
+from3 = False
+touching = False
+close = False
+stuck = False
+off = True
+streak = False
+theTime = 0.0
 
 
 
@@ -119,9 +140,6 @@ def detect_parking(gesture_active, method, input_delay, insert, gesture_id):
 def detect_gesture_once(gesture_active, method, input_delay, insert, gesture_id, ):
     global gesture_timers
     global current_gesture, previous_gesture
-
-
-
 
 
 
@@ -251,45 +269,40 @@ while True:
 
 
             # Gesture 1: mouse pointer
-            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
-                if last_index_finger_location is not None:
-                    # Calculate the change in position
+            # Gesture 1: mouse pointer
 
+
+
+
+
+            if fingers == [1, 1, 1, 0, 0] or fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
+
+
+                if last_index_finger_location is not None:
+                    test.move_dot(indexFinger[0], indexFinger[1], 20, "red")
+                    # Calculate the change in position
                     delta_x = indexFinger[0] - last_index_finger_location[0]
                     delta_y = indexFinger[1] - last_index_finger_location[1]
+
                     # Move the mouse pointer
-                    if fingers == [1, 1, 1, 0, 0]:
-                        sensitivity = 0.5
-                    if fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
-                        sensitivity = 4
+                if fingers == [1, 1, 1, 0, 0]:
+                    innerSensitivity = 12
 
 
-                interactiveInterface.move_mouse(delta_x * sensitivity, delta_y * sensitivity)
+                if fingers == [0, 0, 1, 1, 1] or fingers == [1, 0, 1, 1, 1]:
+                    innerSensitivity = 20
 
-                # movement_threshold = 1  # Minimum change in pixels to move the mouse
-                    # if abs(delta_x) > movement_threshold or abs(delta_y) > movement_threshold:
-                    # Update the previous index finger position
+                interactiveInterface.move_mouse(delta_x , delta_y , innerSensitivity)
                 last_index_finger_location = indexFinger
+
+
+                # Update the previous index finger position
+
             else:
                 # Reset the previous index finger position if the gesture is not active
                 last_index_finger_location = None
 
-        #gesture 2: press k
-            # Gesture 2: Press K (hold gesture for input_delay seconds)
-            # if fingers == [1, 1, 0, 0, 1]:
-            #     gesture_start_time = None
-            #     if gesture_start_time is None:
-            #         gesture_start_time = time.time()  # Start the timer
-            #     else:
-            #         elapsed_time = time.time() - gesture_start_time
-            #         if elapsed_time >= input_delay:
-            #             print("Gesture recognized after holding! Running interactiveInterface.pressk()...")
-            #             interactiveInterface.pressk()
-            #             gesture_start_time = None  # Reset after triggering
-            # else:
-            #     gesture_start_time = None  # Reset if gesture is not active
 
-            # Gesture: Click (fingers == [1,1,0,0,0])
 
 
 

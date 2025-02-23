@@ -15,33 +15,16 @@ from pyautogui import leftClick
 import wave
 import numpy as np
 import threading
+import test
 
 from subprocess import call
 
+import kalmanfilter
+
+
 parker = True
 
-# def get_active_window():
-#     # Get Active Window Title
-#     active_window = gw.getActiveWindow()
-#     if not active_window:
-#         return None
-#
-#     # Simulate Ctrl + L (select address bar) and Ctrl + C (Copy URL)
-#     pyautogui.hotkey('ctrl', 'l')
-#     time.sleep(0.5) # Waits for UT to respond
-#     pyautogui.hotkey('ctrl', 'c')
-#     time.sleep(0.5)
-#
-#     # Returns URL from Clipboard
-#     url = pyperclip.paste()
-#     return url
 
-# print(get_active_window()) # Window URL for future reference
-
-# Check Array and Activate Hotkey
-
-
-# Install with: pip install playsound
 from playsound3 import playsound
 
 import wave
@@ -92,20 +75,6 @@ def get_active_window():
             return None
     return None
 
-def printHand():
-    print("hello world")
-
-# def pressSpace():
-#     pyautogui.press('space', presses=1)
-#
-# def pressk():
-#     pyautogui.press('k', presses=1)
-#
-# def pressj():
-#     pyautogui.press('j', presses=1)
-#
-# def pressl():
-#     pyautogui.press('l', presses=1)
 
 def click():
     pyautogui.click()
@@ -119,10 +88,24 @@ def spam_click():
 
 
 
-def move_mouse(dx, dy): # Move the mouse by Δx and Δy
-   # pyautogui.moveRel(dx, dy, duration=0.2)  # Move relative to the current position
+def move_mouse(in_x, in_y, sens): # Move the mouse by Δx and Δy
+   screen_width, screen_height = pyautogui.size()
    current_x, current_y = pyautogui.position()
-   pyautogui.moveTo(current_x + dx,current_y + dy)
+
+   filtered_x, filtered_y = kalmanfilter.kalman_filter(current_x + in_x * sens, current_y + in_y * sens)
+
+   safe_margin= 10
+   new_x = max(safe_margin,min(screen_width - safe_margin - 1, filtered_x))
+   new_y = max(safe_margin,min(screen_height - safe_margin - 1, filtered_y))
+
+
+   # movement_threshold = 5
+   # delta_x = abs(new_x - current_x)
+   # delta_y = abs(new_y - current_y)
+   #
+   #
+   # if delta_x > movement_threshold or delta_y > movement_threshold:
+   pyautogui.moveTo(new_x, new_y)
 
 def skip_right():
 
@@ -130,7 +113,6 @@ def skip_right():
 
 def skip_left():
     pyautogui.press('left')
-
 
 
 def pause():
