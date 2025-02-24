@@ -104,3 +104,64 @@ if last_index_finger_location is not None:
             theTime = 0.0
 
 
+
+
+
+
+
+
+
+
+
+
+            #
+            # Flip thumb detection manually for the correct hand
+            # if hand["type"] == "Right":
+            #     test_fingers[0] = 1 - test_fingers[0]  # Invert thumb state for the right hand
+            #     # print(fingers)
+            # if hand["type"] == "Left":
+            #     test_fingers[0] = 1 - test_fingers[0]  # Invert thumb state for the right hand
+            #     print(fingers)
+            # print(test_fingers)
+
+            # Loop through hands and get main hand
+            # for hand in hands:
+            #     # hand = hands[0]
+            #     test_fingers = detector.fingersUp(hand)
+                cx,cy = hand['center']
+                lmList = hand['lmList']
+                indexFinger = lmList[0][0], lmList[0][1]
+            #
+            #     if test_fingers == [0, 0, 0, 0, 0]:
+            #         active_hand = hand
+            #
+            #     if active_hand is not None:
+            #         fingers = detector.fingersUp(active_hand)
+            #         print(fingers)
+
+            if hand["type"] == "Right":
+                fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
+                # print(fingers)
+            if hand["type"] == "Left":
+                fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
+                print(fingers)
+
+
+
+# def detect_gesture(gesture_active, method, input_delay, insert):
+#     global g_start_timer
+#
+#     if gesture_active:
+#
+#         if g_start_timer is None:
+#
+#             g_start_timer = time.time()  # Start timer when gesture is first detected
+#         else:
+#             elapsed_time = time.time() - g_start_timer
+#             if elapsed_time >= input_delay:
+#                 print("Gesture recognized after holding" + insert)
+#                 method()  # Trigger the method
+#                 g_start_timer = None  # Reset timer after triggering
+#
+#     else:
+#         g_start_timer = None  # Reset timer if gesture is not ac

@@ -15,7 +15,7 @@ from pyautogui import leftClick
 import wave
 import numpy as np
 import threading
-import test
+
 import win32gui
 import win32process
 import psutil
@@ -36,6 +36,18 @@ import os
 from tempfile import NamedTemporaryFile
 from playsound3 import playsound
 from tempfile import NamedTemporaryFile
+
+
+
+#
+# def detect_activation(hand){
+#
+# }
+
+
+
+
+
 
 
 
@@ -90,7 +102,7 @@ def spam_click():
 prev_x, prev_y = 0,0
 def move_mouse(in_x, in_y, sens):
    global prev_x, prev_y
-   dampening = 0.9
+   dampening = 0.8
 
    screen_width, screen_height = pyautogui.size()
    current_x, current_y = pyautogui.position()

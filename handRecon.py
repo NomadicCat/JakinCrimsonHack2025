@@ -9,7 +9,7 @@ from fontTools.merge.util import current_time
 
 import interactiveInterface
 import shared
-import test
+
 
 
 pyautogui.PAUSE = 0
@@ -27,6 +27,7 @@ reset = 1
 
 
 
+
 # pyautogui.PAUSE = 0
 
 
@@ -40,7 +41,7 @@ cap.set(4,height)
 
 
 #hand Dector
-detector = HandDetector(detectionCon=0.8, maxHands=1)
+detector = HandDetector(detectionCon=0.9, maxHands=2)
 
 
 #Hand Mouse Variables
@@ -73,23 +74,7 @@ last_execution_time = 0
 check_input = 0
 gesture_timers = {}  # Track timers for each gesture
 
-# def detect_gesture(gesture_active, method, input_delay, insert):
-#     global g_start_timer
-#
-#     if gesture_active:
-#
-#         if g_start_timer is None:
-#
-#             g_start_timer = time.time()  # Start timer when gesture is first detected
-#         else:
-#             elapsed_time = time.time() - g_start_timer
-#             if elapsed_time >= input_delay:
-#                 print("Gesture recognized after holding" + insert)
-#                 method()  # Trigger the method
-#                 g_start_timer = None  # Reset timer after triggering
-#
-#     else:
-#         g_start_timer = None  # Reset timer if gesture is not ac
+
 current_gesture = None
 previous_gesture = None
 gesture_activated = {}
@@ -205,6 +190,8 @@ def detect_gesture(gesture_active, method, input_delay, insert, gesture_id):
 
 
 #hand detection Loop
+# interactiveInterface.park()
+
 while True:
 
     # frame_count += 1
@@ -229,11 +216,13 @@ while True:
 
 
 
+
     if hands:
+
 
         hand = hands[0]
         fingers = detector.fingersUp(hand)
-        cx,cy = hand['center']
+        cx, cy = hand['center']
         lmList = hand['lmList']
         indexFinger = lmList[0][0], lmList[0][1]
         # Flip thumb detection manually for the correct hand
@@ -242,7 +231,12 @@ while True:
             # print(fingers)
         if hand["type"] == "Left":
             fingers[0] = 1 - fingers[0]  # Invert thumb state for the right hand
-            # print(fingers)
+            #
+
+
+
+
+
 
 
 
@@ -261,7 +255,7 @@ while True:
             0.1,
             "drive",
             "drive_gesture"  # Unique ID for
-        )
+            )
 
         # print(interactiveInterface.parker)
 
